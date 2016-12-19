@@ -1,3 +1,6 @@
+#! /usr/bin/python
+
+import argparse
 import plistlib
 
 def findDuplicates(filename):
@@ -12,7 +15,7 @@ def findDuplicates(filename):
     playlist = plistlib.readPlist(filename)
 
     # Get the tracks from the dictionary
-    tracks = plist['Tracks']
+    tracks = playlist['Tracks']
 
     # Iterate through the Tracks dictionary
     for trackId, track in tracks.items():
@@ -53,3 +56,32 @@ def findDuplicates(filename):
         f.close()
     else:
         print("No duplicates found! No output file has been created.")
+
+
+# command line handler
+def main():
+    descr = """
+    This program analyzes playlist files (.xml) exported from iTunes
+    """
+
+    parser = argparse.ArgumentParser(description=descr)
+
+    # Add argument parser groups
+    cli_group = parser.add_mutually_exclusive_group()
+
+    # expected arguments within the group
+    cli_group.add_argument('--dup', required=False)
+    cli_group.add_argument('--common',required=False)
+    
+    # parse the provided arguments
+    args = parser.parse_args()
+
+    print vars(args)
+
+    if vars(args).get('dup'):
+        findDuplicates(args.dup)
+        
+
+# main method
+if __name__ == "__main__":
+    main()
