@@ -1,7 +1,7 @@
-#! /usr/bin/python
-
 import argparse
 import plistlib
+import numpy
+from matplotlib import pyplot
 
 
 # Helper class to format arguments for the command line
@@ -119,6 +119,57 @@ def findCommonTracks(filenames):
         print "Couldn't find any common tracks. No file written."
 
 
+# Plot track statistics
+def plotStats(filename):
+    """
+    This function plots track statistics for the provided file
+    """
+    try:
+        playlist = plistlib.readPlist(filename)
+        # retrieve tracks from this playlist
+        tracks = playlist['Tracks']
+
+        # create lists for song ratings and track durations
+        ratings = []
+        durations = []
+
+        # iterate through the tracks
+        for track_id, track in tracks.items():
+            try:
+                ratings.append(track['Album Rating'])
+                durations.append(track['Total Time'])
+            except:
+                pass
+
+        # ensure that valid data was collected
+        if ratings == [] or durations == []:
+            print "No valid album rating/total time in %s" % filename
+            return
+
+        # PLOT - track duration vs track rating
+        # scatter plot
+        x = numpy.array(durations, numpy.int32)
+        # convert duration to minutes
+        x = x/60000.0
+        y = numpy.array(ratings, numpy.int32)
+        pyplot.subplot(2, 1, 1)
+        pyplot.plot(x, y, 'o')
+        pyplot.axis([0, 1.05*numpy.max(x), -1, 110])
+        pyplot.xlabel('Track duration')
+        pyplot.ylabel('Track rating')
+
+        # PLOT - histogram
+        pyplot.subplot(2, 1, 2)
+        pyplot.hist(x, bins=20)
+        pyplot.xlabel('Track duration')
+        pyplot.ylabel('Count')
+
+        pyplot.show()
+
+    except:
+        print "Something went wrong. Did you specify the correct filename?"
+
+
 # command line handler
 def main():
     descr = """
@@ -134,25 +185,34 @@ def main():
     # expected arguments within the group
     cli_group.add_argument('-d',
                            '--dup',
-                           dest='filename',
+                           dest='d_filename',
                            required=False,
                            help="extract names of duplicate tracks")
 
     cli_group.add_argument('-c',
                            '--common',
                            required=False,
-                           dest='filenames',
-                           nargs = 2,
+                           dest='c_filenames',
+                           nargs=2,
                            help="extract common tracks from multiple files")
+
+    cli_group.add_argument('-p',
+                           '--plot',
+                           required=False,
+                           dest='p_filename',
+                           help="plot track stats for a file")
 
     # parse the provided arguments
     args = parser.parse_args()
 
-    if vars(args).get('filename'):
-        findDuplicates(args.filename)
+    if vars(args).get('d_filename'):
+        findDuplicates(args.d_filename)
 
-    if vars(args).get('filenames'):
-        findCommonTracks(args.filenames)
+    if vars(args).get('c_filenames'):
+        findCommonTracks(args.c_filenames)
+
+    if vars(args).get('p_filename'):
+        plotStats(args.p_filename)
 
 
 # main method
