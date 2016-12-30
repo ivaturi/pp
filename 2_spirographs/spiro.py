@@ -1,5 +1,6 @@
-import turtle
 import math
+import random
+import turtle
 from fractions import gcd
 
 
@@ -8,6 +9,9 @@ class Spiro:
 
     # constructor
     def __init__(self, xc, yc, col, R, r, l):
+        """
+        Spiro constructor  - initializes parameters and drawing
+        """
         # Initialize internal parameters
         self.t = turtle.Turtle()         # create the Turtle object
         self.t.shape('turtle')           # set the shape of the cursor
@@ -93,3 +97,48 @@ class Spiro:
         if self.theta >= 360*self.n_rotations:
             self.drawing_complete = True
             self.t.hideturtle()
+
+
+# a class for animating spirographs
+class SpiroAnimator:
+    """
+    The SpiroAnimator class lets us draw random spiros simultaneously.
+    This class uses a timer to draw the curves one segment at a time; this
+    technique updates the graphics periodically and lets the program process
+    UI events.
+    """
+    # constructor
+    def __init__(self, N):
+        # set the time value (in milliseconds)
+        self.delta_t = 10
+
+        # get the dimensions of the window
+        self.width = turtle.window_width()
+        self.height = turtle.window_height()
+
+        # create the spiro objects, to draw with
+        self.spiros = []
+        for i in xrange(N):
+
+            # Generate random parameters
+            r_params = self.genRandomParams()
+            spiro = Spiro(*r_params)
+            self.spiros.append(spiro)
+
+            # call the timer
+            turtle.ontimer(self.update, self.delta_t)
+
+            def genRandomParams(self):
+                """
+                Generate random parameters to initialize Spiros with
+                """
+                width,  height = self.width, self.height
+                R = random.randint(50, min(width, height)//2)
+                r = random.randint(10, 9*R//10)
+                l = random.uniform(0.1, 0.9)
+                xc = random.randint(-width//2, width//2)
+                yc = random.randint(-height//2, height//2)
+                col = (random.random(),
+                       random.random(),
+                       random.random())
+                return (xc, yc, col, R, r, l)
