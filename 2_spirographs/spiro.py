@@ -142,3 +142,17 @@ class SpiroAnimator:
                random.random(),
                random.random())
         return (xc, yc, col, R, r, l)
+
+    def restart(self):
+        """
+        Restart the spiro drawing
+        """
+        for spiro in self.spiros:
+            # clear
+            spiro.clear()
+            # generate random parameters
+            rparams = self.genRandomParams()
+            # set the spiro parameters
+            spiro.setParams(*rparams)
+            #restart drawing
+            spiro.restart()
