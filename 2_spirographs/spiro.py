@@ -99,6 +99,10 @@ class Spiro:
             self.drawing_complete = True
             self.t.hideturtle()
 
+    def clear(self):
+        # clear everything
+        self.t.clear()
+
 
 # a class for animating spirographs
 class SpiroAnimator:
@@ -206,13 +210,14 @@ l - ration of hole distance to r
     parser = argparse.ArgumentParser(description=descr)
     parser.add_argument('--sparams',
                         nargs=3,
+                        required=False,
                         help="The three arguments in sparams: R, r, l.")
 
     # parse args
     args = parser.parse_args()
 
     # Basic turtle setup
-    turtle.setup(width=0.8)
+    turtle.setup(width=0.5)
     turtle.shape('turtle')
     turtle.title("Spirographs!")
     turtle.listen()
