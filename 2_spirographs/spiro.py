@@ -127,12 +127,12 @@ class SpiroAnimator:
 
             # call the timer
             turtle.ontimer(self.update, self.delta_t)
- 
+
     def genRandomParams(self):
         """
         Generate random parameters to initialize Spiros with
         """
-        width,  height = self.width, self.height
+        width, height = self.width, self.height
         R = random.randint(50, min(width, height)//2)
         r = random.randint(10, 9*R//10)
         l = random.uniform(0.1, 0.9)
@@ -154,5 +154,36 @@ class SpiroAnimator:
             rparams = self.genRandomParams()
             # set the spiro parameters
             spiro.setParams(*rparams)
-            #restart drawing
+            # restart drawing
             spiro.restart()
+
+    def update(self):
+        """
+        Method called by the timer to update all spiros
+        that are used in the animation
+        """
+        n_complete = 0
+        # loop through the spiros and update each one
+        for spiro in self.spiros:
+            spiro.update()
+            # count the number of completed spiros
+            if spiro.drawing_complete:
+                n_complete += 1
+        # restart the drawing if all spiros are complete
+        if n_complete == len(self.spiros):
+            self.restart()
+        # call the timer
+        turtle.ontimer(self.update, self. delta_t)
+
+    def toggleTurtles(self):
+        """
+        Toggle turles on and off.
+        Toggling them off makes the drawing go faster
+        """
+        for spiro.in self.spiros:
+            if spiro.t.isvisible():
+                spiro.t.hideturtle()
+            else:
+                spiro.t.showturtle()
+
+    
