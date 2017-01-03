@@ -1,3 +1,4 @@
+import argparse
 import math
 import random
 import turtle
@@ -180,10 +181,63 @@ class SpiroAnimator:
         Toggle turles on and off.
         Toggling them off makes the drawing go faster
         """
-        for spiro.in self.spiros:
+        for spiro in self.spiros:
             if spiro.t.isvisible():
                 spiro.t.hideturtle()
             else:
                 spiro.t.showturtle()
 
-    
+
+def main():
+    """
+    The main entry point
+    """
+    print("Generating spirograph...")
+    # create a parser
+    descr = """This program draws Spirographs using the Turtle module.
+When run with no arguments, this program draws random spirographs.
+
+Terminology:
+
+R - radius of the outer circle
+r - radius of the inner circle
+l - ration of hole distance to r
+"""
+    parser = argparse.ArgumentParser(description=descr)
+    parser.add_argument('--sparams',
+                        nargs=3,
+                        help="The three arguments in sparams: R, r, l.")
+
+    # parse args
+    args = parser.parse_args()
+
+    # Basic turtle setup
+    turtle.setup(width=0.8)
+    turtle.shape('turtle')
+    turtle.title("Spirographs!")
+    turtle.listen()
+
+    turtle.hideturtle()
+
+    # check for any arguments sent to --sparams
+    if args.sparams:
+        params = map(float, args.sparams)
+        # draw with the given params
+        col = (0.0, 0.0, 0.0)
+        spiro = Spiro(0, 0, col, *params)
+        spiro.draw()
+    else:
+        # create the animator object
+        spiro_anim = SpiroAnimator(4)
+        # add a key handler to toggle the turtle cursor
+        turtle.onkey(spiro_anim.toggleTurtles, "t")
+        # add a key handler to restart the animation
+        turtle.onkey(spiro_anim.restart, "space")
+
+    # start the main loop
+    turtle.mainloop()
+
+
+# call main
+if __name__ == "__main__":
+    main()
