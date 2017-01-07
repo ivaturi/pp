@@ -8,3 +8,15 @@
 import numpy as np
 import matplotlib.pyplot as plot
 import matplotlib.animation as anim
+
+# setup values
+ON = 255
+OFF = 0
+states = [ON, OFF]
+
+def randomGrid(n):
+    """
+    Returns a grid of n x n random values
+    """
+    values = np.random.choice(states, n*n, p=[0.2, 0.8])
+    return values.reshape(n, n)
