@@ -66,9 +66,7 @@ def update(frame_num, img, grid, n):
                 else:
                     if total is 3:
                         new_grid[i, j] = ON
-                    else:
-                        new_grid[i, j] = OFF
-            # update data
+    # update data
     img.set_data(new_grid)
     grid[:] = new_grid[:]
     return img
