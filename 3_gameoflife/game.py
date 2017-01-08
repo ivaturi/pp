@@ -39,3 +39,36 @@ def addGlider(col, row, grid):
     # Assign the glider a position in the grid
     # according to the requested (col, row)
     grid[col:col+3, row:row+3] = glider
+
+def update(frame_num, img, grid, n):
+    """
+    Run one update cycle of the grid
+    """
+    # make a copy of the grid
+    new_grid = grid.copy()
+    # go through the grid, line by line
+    for i in xrange(n):
+        for j in xrange(n):
+            # compute the 8-neighbor sum using toroidal boundary conditions
+            total = int(grid[i, (j-1) % n] +
+                        grid[i, (j+1) % n] +
+                        grid[(i-1) % n, j] +
+                        grid[(i+1) % n, j] +
+                        grid[(i-1) % n, (j-1) % n] +
+                        grid[(i-1) % n, (j+1) % n] +
+                        grid[(i+1) % n, (j-1) % n] +
+                        grid[(i+1) % n, (j+1) % n])
+            total = int(total/255)
+            # apply conway's rules
+            if grid[i, j] == ON:
+                if (total < 2) or (total > 3):
+                    new_grid[i, j] = OFF
+                else:
+                    if total is 3:
+                        new_grid[i, j] = ON
+                    else:
+                        new_grid[i, j] = OFF
+            # update data
+    img.set_data(new_grid)
+    grid[:] = new_grid[:]
+    return img
