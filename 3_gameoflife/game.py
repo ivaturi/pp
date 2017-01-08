@@ -14,9 +14,28 @@ ON = 255
 OFF = 0
 states = [ON, OFF]
 
+
 def randomGrid(n):
     """
     Returns a grid of n x n random values
     """
     values = np.random.choice(states, n*n, p=[0.2, 0.8])
     return values.reshape(n, n)
+
+# We're setting up a pattern here that we can insert at a
+# specified row and column, so we can define an initial
+# condition to match a pattern
+# (instead of filling the grid with a random set of values)
+def addGlider(col, row, grid):
+    """
+    Adds a glider with top left at (row, col)
+    (A glider patter preserves its shape as it moves steadily
+    across the grid)
+    """
+    # define the glider pattern
+    glider = np.array([[0, 0, 255],
+                       [255, 0, 255],
+                       [0, 0, 255]])
+    # Assign the glider a position in the grid
+    # according to the requested (col, row)
+    grid[col:col+3, row:row+3] = glider
